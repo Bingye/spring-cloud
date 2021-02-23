@@ -1,0 +1,64 @@
+server:
+  port: 8001
+  servlet:
+    context-path: /spring-cloud-provider
+
+spring:
+  application:
+    name: spring-cloud-provider
+  datasource:
+    name: 数据库
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@192.168.20.15:1521/bzapp
+    username: u_zmxt
+    password: JcIcEHeEPCwPCg3h
+  zipkin: 
+    base-url: http://localhost:9411
+  sleuth:
+    sampler:
+      #日志采样率，[0,1] 1则表示全部采样
+      probability: 1
+#  cloud: 
+#    #consul注册中心
+#    consul: 
+#      host: localhost
+#      port: 8500
+#      discovery:
+#        prefer-ip-address: true
+#        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}
+#        healthCheckInterval: 15s
+#        health-check-url: http://${spring.cloud.client.ip-address}:${server.port}/${spring.application.name}/actuator/health
+#        service-name: ${spring.application.name}
+#management: 
+#  endpoints: 
+#    web:
+#      exposure:
+#        include: "*"
+
+#  cloud:
+#    zookeeper:
+#      connect-string: 127.0.0.1:2181
+#      discovery:
+#        enabled: true
+    
+eureka:
+  client:
+    #将自己注册到服务注册中心
+    register-with-eureka: true
+    #是否从eureka server 抓取已有的注册信息，默认true，单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡
+    fetch-registry: true
+    service-url: 
+      #defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka
+      defaultZone: http://eureka7001.com:7001/eureka
+  instance:
+    instance-id: provider-${server.port}
+    #显示IP地址，方便找到目标主机
+    prefer-ip-address: true
+    #eureka 客户端向服务端发送心跳的时间间隔
+    lease-renewal-interval-in-seconds: 1
+    #eureka 服务端最后一次收到心跳的等待时间上限，单位是秒（90s），超时将剔除服务。前提是服务端的剔除开关已关闭。
+    lease-expiration-duration-in-seconds: 2
+    
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.bingye.provider.domain.po

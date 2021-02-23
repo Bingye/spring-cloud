@@ -1,0 +1,26 @@
+server:
+  port: 82
+  servlet:
+    context-path: /spring-cloud-consumer
+    
+spring:
+  application:
+    name: spring-cloud-consumer
+  cloud: 
+    config:
+      label: master
+      name: spring-cloud-consumer
+      profile: dev
+      uri:
+        - http://localhost:3344/spring-cloud-config
+    bus:
+      enabled: true
+      refresh:
+        enabled: true
+      trace:
+        enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

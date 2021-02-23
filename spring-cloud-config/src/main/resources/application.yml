@@ -1,0 +1,53 @@
+server:
+  port: 3344
+  servlet:
+    context-path: /spring-cloud-config
+  
+spring:
+  application:
+    name: spring-cloud-config
+  #微服务调用链路跟踪
+  zipkin: 
+    base-url: http://localhost:9411
+  sleuth:
+    sampler:
+      #日志采样率，[0,1] 1则表示全部采样
+      probability: 1
+  cloud:
+    config: 
+      label: master
+      server: 
+        git: 
+          #https 地址
+          uri: https://github.com/Bingye/spring-cloud-config.git
+          #仓库路径   config测试地址curl -X POST http://localhost:3344/spring-cloud-config/master/application-dev.yml
+          search-paths: 
+            - spring-cloud-config
+    bus: 
+      enabled: true
+      trace:
+        enabled: true
+      refresh:
+        # 开启总线消息更新功能
+        enabled: true  
+  #rabbitmq配置
+  rabbitmq: 
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url: 
+      defaultZone: http://eureka7001.com:7001/eureka
+      
+# 可以选择【"health","mappings","bus-refresh"】三种选项暴露那些端点   bus测试地址curl -X POST http://localhost:3344/spring-cloud-config/actuator/bus-refresh
+management: 
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+       

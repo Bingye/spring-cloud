@@ -1,0 +1,46 @@
+server:
+  port: 9527
+  servlet: 
+    context-path: /spring-cloud-gateway
+  
+spring: 
+  application:
+    name: spring-cloud-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          #开启从注册中心动态创建路由的功能，利用微服务名进行路由
+          enabled: true 
+      routes: 
+          #路由ID,唯一
+        - id: ahzwfw               
+          #匹配后提供服务的路由地址
+          uri: http://bz.ahzwfw.gov.cn
+          #断言,路径相匹配的进行路由          
+          predicates:                     
+            - Path=/bog-bsdt/static/**
+        
+        - id: provider-test     
+          #uri: http://localhost:8001
+          uri: lb://SPRING-CLOUD-PROVIDER
+          predicates:               
+            - Path=/spring-cloud-provider/test/**
+            - After=2021-01-25T14:24:52.446+08:00[Asia/Irkutsk]    #在时间之后访问
+            #- Cookie=username,bingye      #curl http://localhost:9527/spring-cloud-provider/test/get/2 --cookie "username=bingye"
+            #- Header=X-Request-Id,\d+      #curl http://localhost:9527/spring-cloud-provider/test/get/2 -H "X-Request-Id:121"
+            #- Query=subjecttype,\[A-Z]+
+        
+        - id: baidu
+          uri: http://news.baidu.com     
+          predicates:               
+            - Path=/guonei
+            
+eureka: 
+  instance:
+    instance-id: ${spring.application.name}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka

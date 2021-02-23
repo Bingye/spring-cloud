@@ -1,0 +1,45 @@
+#  cloud:
+#    consul: 
+#      host: eureka7001.com
+#      port: 8500
+#      discovery:
+#        register: false
+
+#  cloud:
+#    zookeeper:
+#      connect-string: 127.0.0.1:2181 
+   
+
+eureka: 
+  client:
+    #将自己注册到服务注册中心 
+    register-with-eureka: false
+    #是否从eureka server 抓取已有的注册信息，默认true，单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka 
+#      defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka
+
+#设置feign客户端的超时时间
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 5000
+
+#日志级别
+logging: 
+  level: 
+    #feign调用日志
+    com.bingye.consumer.service.IFeignService: debug
+
+#开启feign对hystrix的支持
+feign:
+  hystrix: 
+    enabled: true
+#这里是一个坑 超时时间配置，此处全局超时配置时间大于@HystrixProperty配置时间后，@HystrixProperty注解中的超时才生效
+hystrix: 
+  command: 
+    default: 
+      execution: 
+        isolation: 
+          thread: 
+            timeoutInMilliseconds: 4000
